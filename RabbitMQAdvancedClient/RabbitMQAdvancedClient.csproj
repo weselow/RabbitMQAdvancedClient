@@ -32,7 +32,7 @@
 
   <PropertyGroup>
     <PackageId>RabbitMQAdvancedClient</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Alexander Weselow</Authors>
     <Company>Russian Software Developers, LLC</Company>
     <Description>Продвинутая библиотека-клиент для работы с RabbitMQ в .NET приложениях. Обеспечивает простой и надежный API для публикации и подписки на сообщения, с поддержкой повторных попыток подключения, логирования и управления подтверждениями сообщений.</Description>
@@ -41,9 +41,9 @@
     <Title>RabbitMQAdvancedClient</Title>
     <PackageProjectUrl>https://github.com/weselow/RabbitMQAdvancedClient</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageIcon>Resources/icon.png</PackageIcon>
+    <PackageIcon>Resources/icon.png</PackageIcon>     
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>     
     <Copyright>Alexander Weselow</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
