@@ -22,6 +22,13 @@
     <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup>
     <PackageId>RabbitMQAdvancedClient</PackageId>
     <Version>1.0.0</Version>
@@ -33,6 +40,7 @@
     <Title>RabbitMQAdvancedClient</Title>
     <PackageProjectUrl>https://github.com/weselow/RabbitMQAdvancedClient</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
 </Project>
