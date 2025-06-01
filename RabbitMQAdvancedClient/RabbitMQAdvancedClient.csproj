@@ -4,7 +4,15 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
@@ -13,5 +21,18 @@
     <PackageReference Include="NLog" Version="5.5.0" />
     <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>RabbitMQAdvancedClient</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Alexander Weselow</Authors>
+    <Company>Russian Software Developers, LLC</Company>
+    <Description>Продвинутая библиотека-клиент для работы с RabbitMQ в .NET приложениях. Обеспечивает простой и надежный API для публикации и подписки на сообщения, с поддержкой повторных попыток подключения, логирования и управления подтверждениями сообщений.</Description>
+    <RepositoryUrl>https://github.com/weselow/RabbitMQAdvancedClient</RepositoryUrl>
+    <PackageTags>rabbitmq;client;messaging</PackageTags>
+    <Title>RabbitMQAdvancedClient</Title>
+    <PackageProjectUrl>https://github.com/weselow/RabbitMQAdvancedClient</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
 
 </Project>
