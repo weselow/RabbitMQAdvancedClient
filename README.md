@@ -135,7 +135,38 @@ await _rabbitMqClient.SubscribeAsync<OrderCreatedMessage>(
     },
     autoAck: true
 );
+```
 
+```csharp
+// Подписываемся на очередь, передавая метод
+await rabbitMqClient.SubscribeAsync<OrderCreatedMessage>(
+    queueName: "orders.created",
+    onMessageReceived: ProcessOrderMessage,
+    autoAck: false
+);
+
+// Метод обработки сообщения
+private async Task ProcessOrderMessage(OrderCreatedMessage message, MessageContext context)
+{
+    try
+    {
+        Console.WriteLine($"Обработка заказа #{message.OrderId} на сумму {message.Amount}");
+        // Логика обработки
+        await Task.Delay(200); // Имитация работы
+        
+        // Подтверждение успешной обработки
+        await context.AckAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ошибка при обработке заказа: {ex.Message}");
+        // Возвращаем сообщение в очередь для повторной обработки
+        await context.NackAsync(requeue: true);
+    }
+}
+```
+
+```csharp
 // Подписка с ручным подтверждением сообщений
 await _rabbitMqClient.SubscribeAsync<OrderCreatedMessage>(
     queueName: "orders.created",
