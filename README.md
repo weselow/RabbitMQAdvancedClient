@@ -108,7 +108,7 @@ public class OrderCreatedMessage
 }
 
 // Публикация сообщения
-await _rabbitMqClient.PublishAsync("orders.created", new OrderCreatedMessage
+await _rabbitMqClient.PublishAsync(queueName: "orders.created", new OrderCreatedMessage
 {
     OrderId = 12345,
     Amount = 99.99m,
@@ -208,7 +208,7 @@ public class NotificationService
 
     public async Task SendNotificationAsync(string userId, string message)
     {
-        await _rabbitMqClient.PublishAsync("notifications", new
+        await _rabbitMqClient.PublishAsync(queueName: "notifications", new
         {
             UserId = userId,
             Message = message,
@@ -219,7 +219,7 @@ public class NotificationService
     public async Task StartNotificationProcessingAsync()
     {
         await _rabbitMqClient.SubscribeAsync<dynamic>(
-            "notifications",
+            queueName: "notifications",
             async (notification, context) =>
             {
                 Console.WriteLine($"Отправка уведомления пользователю {notification.UserId}: {notification.Message}");
@@ -267,7 +267,7 @@ public class PaymentService
             bool paymentSuccessful = await ProcessPaymentLogic(customerId, amount);
             
             // Публикация результата
-            await _rabbitMqClient.PublishAsync("payments.processed", new PaymentProcessedMessage
+            await _rabbitMqClient.PublishAsync(queueName: "payments.processed", new PaymentProcessedMessage
             {
                 TransactionId = transactionId,
                 CustomerId = customerId,
@@ -281,7 +281,7 @@ public class PaymentService
             _logger.LogError(ex, "Ошибка при обработке платежа");
             
             // Публикация сообщения об ошибке
-            await _rabbitMqClient.PublishAsync("payments.processed", new PaymentProcessedMessage
+            await _rabbitMqClient.PublishAsync(queueName: "payments.processed", new PaymentProcessedMessage
             {
                 TransactionId = transactionId,
                 CustomerId = customerId,
@@ -295,7 +295,7 @@ public class PaymentService
     public async Task StartPaymentNotificationServiceAsync()
     {
         await _rabbitMqClient.SubscribeAsync<PaymentProcessedMessage>(
-            "payments.processed",
+            queueName: "payments.processed",
             async (payment, context) =>
             {
                 try
