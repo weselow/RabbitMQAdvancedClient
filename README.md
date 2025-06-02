@@ -35,7 +35,11 @@
 ## Установка
 
 Для установки пакета RabbitMQAdvancedClient используйте NuGet Package Manager:
+```bash
 dotnet add package RabbitMQAdvancedClient
+```
+Для логирования по-умолчанию используется `NLog`.
+
 ## Настройка
 
 ### Параметры подключения
