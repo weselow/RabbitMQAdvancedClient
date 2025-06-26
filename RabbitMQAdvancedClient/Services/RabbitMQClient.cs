@@ -64,10 +64,10 @@ namespace RabbitMQAdvancedClient.Services
 
                     var context = new MessageContext(channel, ea.DeliveryTag);
 
-                    if (autoAck)
-                    {
-                        await context.AckAsync(); // Автоматическое подтверждение
-                    }
+                    //if (autoAck)
+                    //{
+                    //    await context.AckAsync(); // Автоматическое подтверждение
+                    //}
 
                     await onMessageReceived(message, context);
 
@@ -78,7 +78,7 @@ namespace RabbitMQAdvancedClient.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Ошибка при обработке сообщения.");
+                    _logger.Error(ex, "Ошибка при обработке сообщения - {message}", ex.Message);
                     if (!autoAck)
                     {
                         await channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: true);
@@ -86,20 +86,7 @@ namespace RabbitMQAdvancedClient.Services
                 }
 
             };
-
-            /*
-        /// <summary>Asynchronously start a Basic content-class consumer.</summary>
-        /// <param name="queue">The queue.</param>
-        /// <param name="autoAck">If set to <c>true</c>, automatically ack messages.</param>
-        /// <param name="consumerTag">The consumer tag.</param>
-        /// <param name="noLocal">If set to <c>true</c>, this consumer will not receive messages published by the same connection.</param>
-        /// <param name="exclusive">If set to <c>true</c>, the consumer is exclusive.</param>
-        /// <param name="arguments">Consumer arguments.</param>
-        /// <param name="consumer">The consumer, an instance of <see cref="IAsyncBasicConsumer"/></param>
-        /// <param name="cancellationToken">Cancellation token for this operation.</param>
-        /// <returns></returns>
-           */
-            //var  tx = await channel.BasicConsumeAsync(queue: queueName, autoAck: autoAck, consumerTag: "zipler", noLocal: false, exclusive: true, arguments: null, consumer: consumer);
+            
             var consumerTag = await channel.BasicConsumeAsync(queue: queueName, autoAck: autoAck, consumer: consumer);
             _subscriptions.TryAdd(queueName, (channel, consumerTag));
 
