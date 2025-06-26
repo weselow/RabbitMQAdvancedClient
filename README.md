@@ -35,7 +35,11 @@
 ## Установка
 
 Для установки пакета RabbitMQAdvancedClient используйте NuGet Package Manager:
+```bash
 dotnet add package RabbitMQAdvancedClient
+```
+Для логирования по-умолчанию используется `NLog`.
+
 ## Настройка
 
 ### Параметры подключения
@@ -108,7 +112,7 @@ public class OrderCreatedMessage
 }
 
 // Публикация сообщения
-await _rabbitMqClient.PublishAsync("orders.created", new OrderCreatedMessage
+await _rabbitMqClient.PublishAsync(queueName: "orders.created", new OrderCreatedMessage
 {
     OrderId = 12345,
     Amount = 99.99m,
@@ -131,7 +135,38 @@ await _rabbitMqClient.SubscribeAsync<OrderCreatedMessage>(
     },
     autoAck: true
 );
+```
 
+```csharp
+// Подписываемся на очередь, передавая метод
+await rabbitMqClient.SubscribeAsync<OrderCreatedMessage>(
+    queueName: "orders.created",
+    onMessageReceived: ProcessOrderMessage,
+    autoAck: false
+);
+
+// Метод обработки сообщения
+private async Task ProcessOrderMessage(OrderCreatedMessage message, MessageContext context)
+{
+    try
+    {
+        Console.WriteLine($"Обработка заказа #{message.OrderId} на сумму {message.Amount}");
+        // Логика обработки
+        await Task.Delay(200); // Имитация работы
+        
+        // Подтверждение успешной обработки
+        await context.AckAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ошибка при обработке заказа: {ex.Message}");
+        // Возвращаем сообщение в очередь для повторной обработки
+        await context.NackAsync(requeue: true);
+    }
+}
+```
+
+```csharp
 // Подписка с ручным подтверждением сообщений
 await _rabbitMqClient.SubscribeAsync<OrderCreatedMessage>(
     queueName: "orders.created",
@@ -208,7 +243,7 @@ public class NotificationService
 
     public async Task SendNotificationAsync(string userId, string message)
     {
-        await _rabbitMqClient.PublishAsync("notifications", new
+        await _rabbitMqClient.PublishAsync(queueName: "notifications", new
         {
             UserId = userId,
             Message = message,
@@ -219,7 +254,7 @@ public class NotificationService
     public async Task StartNotificationProcessingAsync()
     {
         await _rabbitMqClient.SubscribeAsync<dynamic>(
-            "notifications",
+            queueName: "notifications",
             async (notification, context) =>
             {
                 Console.WriteLine($"Отправка уведомления пользователю {notification.UserId}: {notification.Message}");
@@ -267,7 +302,7 @@ public class PaymentService
             bool paymentSuccessful = await ProcessPaymentLogic(customerId, amount);
             
             // Публикация результата
-            await _rabbitMqClient.PublishAsync("payments.processed", new PaymentProcessedMessage
+            await _rabbitMqClient.PublishAsync(queueName: "payments.processed", new PaymentProcessedMessage
             {
                 TransactionId = transactionId,
                 CustomerId = customerId,
@@ -281,7 +316,7 @@ public class PaymentService
             _logger.LogError(ex, "Ошибка при обработке платежа");
             
             // Публикация сообщения об ошибке
-            await _rabbitMqClient.PublishAsync("payments.processed", new PaymentProcessedMessage
+            await _rabbitMqClient.PublishAsync(queueName: "payments.processed", new PaymentProcessedMessage
             {
                 TransactionId = transactionId,
                 CustomerId = customerId,
@@ -295,7 +330,7 @@ public class PaymentService
     public async Task StartPaymentNotificationServiceAsync()
     {
         await _rabbitMqClient.SubscribeAsync<PaymentProcessedMessage>(
-            "payments.processed",
+            queueName: "payments.processed",
             async (payment, context) =>
             {
                 try
