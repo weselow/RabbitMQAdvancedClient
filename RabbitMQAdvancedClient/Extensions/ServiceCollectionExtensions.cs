@@ -58,5 +58,37 @@ namespace RabbitMQAdvancedClient.Extensions
 
             return services;
         }
+
+        /// <summary>
+        /// Регистрирует RabbitMQ клиент и связанные сервисы в DI.
+        /// </summary>
+        /// <param name="services">Коллекция сервисов.</param>
+        /// <param name="optionsFactory">Делегат для настройки параметров подключения.</param>
+        /// <returns>Коллекция сервисов.</returns>
+        /// <example>
+        /// Пример использования:
+        /// <code>
+        /// services.AddRabbitMq(options =>
+        /// {
+        ///     options.Host = "localhost";
+        ///     options.Port = 5672;
+        ///     options.Username = "guest";
+        ///     options.Password = "guest";
+        ///     options.RetryCount = 5;
+        ///     options.RetryDelay = 10;
+        /// });
+        /// </code>
+        /// </example>
+        public static IServiceCollection AddRabbitMq(
+            this IServiceCollection services,
+            Func<IServiceProvider, RabbitMqOptions> optionsFactory)
+        {
+            services.AddSingleton<RabbitMqOptions>(optionsFactory);
+
+            services.AddSingleton<IConnectionManager, ConnectionManager>();
+            services.AddSingleton<IRabbitMqClient, RabbitMqClient>();
+
+            return services;
+        }
     }
 }

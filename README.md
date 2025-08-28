@@ -81,6 +81,21 @@ var rabbitOptions = new RabbitMqOptions
     // другие настройки...
 };
 services.AddRabbitMq(rabbitOptions);
+
+// ИЛИ регистрация с использованием фабрики опций (например, через IConfiguration)
+services.AddRabbitMq(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return new RabbitMqOptions
+    {
+        Host = configuration["RabbitMq:Host"],
+        Port = int.Parse(configuration["RabbitMq:Port"]),
+        Username = configuration["RabbitMq:Username"],
+        Password = configuration["RabbitMq:Password"],
+        RetryCount = 5,
+        RetryDelay = 10
+    };
+});
 ```
 
 После регистрации вы можете внедрить `IRabbitMqClient` в ваши сервисы:
